@@ -1,4 +1,5 @@
 mod base64;
+mod hex;
 
 fn main() {
     // 1-1
