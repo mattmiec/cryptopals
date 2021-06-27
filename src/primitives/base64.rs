@@ -1,15 +1,4 @@
-use super::hex;
-
-pub fn convert_hex_string_to_b64_string(hex_string: &String) -> String {
-
-    let hex_bytes = hex_string.as_bytes();
-    let raw_bytes = hex::hex_bytes_to_raw_bytes(hex_bytes);
-    let b64_bytes = raw_bytes_to_b64_bytes(&raw_bytes[..]);
-    let b64_string = String::from_utf8(b64_bytes).expect("failed to convert b64_bytes to string!");
-    return b64_string;
-}
-
-fn raw_bytes_to_b64_bytes(raw_bytes: &[u8]) -> Vec<u8> {
+pub fn raw_bytes_to_b64_bytes(raw_bytes: &[u8]) -> Vec<u8> {
     let mut ret: Vec<u8> = Vec::with_capacity((raw_bytes.len() / 3) * 4);
     let mut i = 0;
     while i < raw_bytes.len() {
