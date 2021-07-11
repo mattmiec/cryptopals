@@ -2,6 +2,7 @@ mod primitives;
 mod decrypt;
 mod util;
 
+use std::collections::HashSet;
 use std::fs::File;
 use std::io::{BufReader, prelude::*};
 
@@ -45,8 +46,7 @@ fn main() {
 
     // 1-4
     println!("====1-4====");
-    let filename = "material/4.txt";
-    let file = File::open(filename).expect("unable to open file!");
+    let file = File::open("material/4.txt").expect("unable to open file!");
     let reader = BufReader::new(file);
 
     let mut best_score = -1;
@@ -80,7 +80,6 @@ fn main() {
     println!("Encrypted string: {}", ciphertext_string);
     println!();
 
-
     // 1-6
     println!("====1-6====");
     let s1 = "this is a test";
@@ -107,5 +106,34 @@ fn main() {
     let cipher = Cipher::aes_128_ecb();
     let plaintext = decrypt(cipher, key, Option::None, &ciphertext_bytes).unwrap();
     println!("{}", String::from_utf8(plaintext).unwrap());
+    println!();
+
+    // 1-8
+    println!("====1-8====");
+    let file = File::open("material/8.txt").expect("unable to open file!");
+    let reader = BufReader::new(file);
+    let mut l = 0;
+    let mut max_repeats = 0;
+    let mut suspect = 0;
+    for line in reader.lines() {
+        let mut repeats = 0;
+        let s = line.unwrap();
+        let mut seen = HashSet::new();
+        for i in 0..(s.len()/32) {
+            let block = &s[i*32..(i+1)*32];
+            if seen.contains(block) {
+                repeats += 1;
+            } else {
+                seen.insert(block);
+            }
+        }
+        //println!("{} repeats on line {}", repeats, l);
+        if repeats > max_repeats {
+            max_repeats = repeats;
+            suspect = l;
+        }
+        l += 1;
+    }
+    println!("Detected ECB encryption on line {} with {} repeating 16-byte blocks.", suspect, max_repeats);
     println!();
 }
