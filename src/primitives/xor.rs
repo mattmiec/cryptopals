@@ -21,7 +21,7 @@ pub fn xor_byte_slice_fixed(raw_bytes: &[u8], key: u8) -> Vec<u8> {
     return raw_bytes_xor;
 }
 
-pub fn encrypt_bytes_repeating_key_xor(bytes: &[u8], key: &[u8]) -> Vec<u8> {
+pub fn xor_bytes_repeating_key(bytes: &[u8], key: &[u8]) -> Vec<u8> {
     if key.len() == 0 {
         panic!("Key length must be >= 0");
     }
