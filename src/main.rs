@@ -1,8 +1,12 @@
 mod primitives;
 mod decrypt;
+mod util;
 
 use std::fs::File;
 use std::io::{BufReader, prelude::*};
+
+use openssl::symm::{decrypt, Cipher};
+
 
 fn main() {
     // 1-1
@@ -83,13 +87,7 @@ fn main() {
     let s2 = "wokka wokka!!!";
     println!("Hamming distance between '{}' and '{}' is {}", s1, s2, decrypt::hamming_distance(s1.as_bytes(), s2.as_bytes()));
 
-    let filename = "material/6.txt";
-    let file = File::open(filename).expect("Problem opening file!");
-    let reader = BufReader::new(file);
-    let mut ciphertext_b64 = String::new();
-    for line in reader.lines() {
-        ciphertext_b64.push_str(&line.expect("Problem reading line!"));
-    }
+    let ciphertext_b64 = util::file_to_string_strip_newlines("material/6.txt");
     let ciphertext_bytes = primitives::base64::b64_bytes_to_raw_bytes(ciphertext_b64.as_bytes());
     let key_len = decrypt::most_likely_key_len(&ciphertext_bytes);
     println!("Best key length: {}", key_len);
@@ -99,5 +97,15 @@ fn main() {
     let plaintext_string = String::from_utf8(plaintext_bytes).expect("Failed to interpet plaintext as utf8!");
     println!("Decrypted message:");
     println!("{}", plaintext_string);
+    println!();
+
+    // 1-7
+    println!("====1-7====");
+    let ciphertext_b64 = util::file_to_string_strip_newlines("material/7.txt");
+    let ciphertext_bytes = primitives::base64::b64_bytes_to_raw_bytes(ciphertext_b64.as_bytes());
+    let key = b"YELLOW SUBMARINE";
+    let cipher = Cipher::aes_128_ecb();
+    let plaintext = decrypt(cipher, key, Option::None, &ciphertext_bytes).unwrap();
+    println!("{}", String::from_utf8(plaintext).unwrap());
     println!();
 }
