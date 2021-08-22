@@ -1,5 +1,5 @@
 [package]
-name = "cryptopals"
+name = "cryptopals-set1"
 version = "0.1.0"
 authors = ["matt <mtmiec@gmail.com>"]
 edition = "2018"
